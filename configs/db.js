@@ -6,5 +6,4 @@ module.exports = {
     username: process.env.MONGODB_USERNAME || 'root',
     password: process.env.MONGODB_PASSWORD || '123456',
   },
-  // 其他配置...
 };
