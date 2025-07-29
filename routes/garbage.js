@@ -36,11 +36,11 @@ router.delete('/garbage/:id', async (req, res) => {
 });
 
 // 查询分类下垃圾集合
-router.get('/garbage/search/:categoryId', async (req, res) => {
+router.get('/garbage/search/:type', async (req, res) => {
   try {
-    const { categoryId } = req.params;
+    const { type } = req.params;
     const items = await garbageItem.find({
-      categoryId: { $regex: String(categoryId), $options: 'i' }
+      category: Number(type)
     });
     res.success(items);
   } catch (err) {
@@ -50,12 +50,11 @@ router.get('/garbage/search/:categoryId', async (req, res) => {
 
 // 添加新的垃圾分类项
 router.post('/garbage/create', async (req, res) => {
-  const { name, category, categoryId, description, tips, commonItems } = req.body;
+  const { name, category, description, tips, commonItems } = req.body;
   
   const item = new garbageItem({
     name,
     category,
-    categoryId,
     description,
     tips,
     commonItems
@@ -71,11 +70,12 @@ router.post('/garbage/create', async (req, res) => {
 
 // 添加新的分类
 router.post('/garbage/category/create', async (req, res) => {
-  const { name, icon, description } = req.body;
+  const { name, icon, type, description } = req.body;
   
   const item = new garbageCateGory({
     name,
     icon,
+    type,
     description
   });
 
