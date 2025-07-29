@@ -13,7 +13,6 @@ const garbageItemSchema = new mongoose.Schema({
     required: true,
     enum: [1, 2, 3, 4]
   },
-  categoryId: String,
   description: String,
   tips: String,
   commonItems: [String],
