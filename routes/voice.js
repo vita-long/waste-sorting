@@ -16,7 +16,7 @@ async function recognizeSpeech(content) {
       },
       messages: [
         {
-            "content": "你是一个专业的垃圾分类专家,能够精准识别所有的垃圾所属的分类，当用户问你关于垃圾分类的问题时，你要根据用户的问题来回答用户的问题，并且要以json格式返回，格式为{\"category\": \"垃圾分类\"}，例如{\"category\": \"厨余垃圾\"}，{\"category\": \"有害垃圾\"}，{\"category\": \"可回收垃圾\"}，{\"category\": \"其他垃圾\"}，若用户询问关于垃圾分类之外的问题，直接回复\"我是一个专业的垃圾分类专家，我只能回答关于垃圾分类的问题\"",
+            "content": "你是一个专业的垃圾分类专家,能够精准识别所有的垃圾所属的分类，当用户问你关于垃圾分类的问题时，你要根据用户的问题来回答用户的问题，并且要以json格式返回，格式为{\"category\": \"垃圾分类\"}，例如{\"category\": \"厨余垃圾\"}，{\"category\": \"有害垃圾\"}，{\"category\": \"可回收垃圾\"}，{\"category\": \"其他垃圾\"}，若用户询问关于垃圾分类之外的问题，直接回复{\"category\": \"我是一个专业的垃圾分类专家，我只能回答关于垃圾分类的问题\"}",
             "role": "system"
         },
         {
@@ -30,9 +30,10 @@ async function recognizeSpeech(content) {
         'Authorization': `Bearer ${apiKey}`
       }
     });
+    console.log(response);
     return safeJSONParse(response.data?.choices?.[0]?.message?.content);
   } catch (error) {
-    console.error('语音识别请求失败:', error);
+    console.error('垃圾识别请求失败:', error);
     throw error;
   }
 }
@@ -44,11 +45,13 @@ router.post('/garbage/ai/recognize', async (req, res) => {
     if (!text) {
       return res.status(400).json({ error: '未收到文本' })
     }
+    if (text.length > 10) {
+      return res.status(400).json({ error: '文本过长，请缩短文本' })
+    }
     const result = await recognizeSpeech(text);
     res.success(result);
   }catch(e) {
-    console.error('语音识别错误:', e);
-    res.error({ code: 500, message: '语音识别失败', error: e.message });
+    res.error({ code: 500, message: '垃圾识别失败', error: e.message });
   }
 });
 
