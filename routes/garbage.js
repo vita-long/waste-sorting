@@ -87,4 +87,28 @@ router.post('/garbage/category/create', async (req, res) => {
   }
 });
 
+// 修改垃圾信息
+router.patch('/garbage/modify/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, category, description, tips, commonItems } = req.body;
+  const updateItem = await garbageItem.findByIdAndUpdate(id, {
+    name,
+    category,
+    description,
+    tips,
+    commonItems,
+    $set: { updatedAt: new Date() }
+  },
+  {
+    new: true, // 返回更新后的文档
+    runValidators: true // 运行模型验证
+  });
+
+  try {
+    res.success(updateItem);
+  } catch (err) {
+    res.error(err.message, 500);
+  }
+});
+
 module.exports = router;
